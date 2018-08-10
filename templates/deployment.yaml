@@ -1,0 +1,108 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "graylog.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "graylog.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "graylog.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: "{{ .Values.priorityClassName }}"
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: GRAYLOG_PASSWORD_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key: password-secret
+        - name: GRAYLOG_ROOT_PASSWORD_SHA2
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "graylog.fullname" . }}
+              key: root-password-sha2
+        - name: GRAYLOG_CONTENT_PACKS_AUTO_LOAD
+          value: "{{- range $index, $file := (keys .Values.contentpack) }}grok-patterns.json,{{ if $index }},{{ end }}{{ $file }}{{- end }}"
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
+        ports:
+{{ toYaml .Values.ports | indent 12 }}
+        # livenessProbe:
+        #   httpGet:
+        #     path: /api
+        #     port: {{ .Values.service.ports.http.port }}
+        #     initialDelaySeconds: 20
+        #     failureThreshold: 5
+        # readinessProbe:
+        #   httpGet:
+        #     path: /api
+        #     port: {{ .Values.service.ports.http.port }}
+        #     initialDelaySeconds: 20
+        #     failureThreshold: 5
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        {{- if .Values.config }}
+        - name: config
+          mountPath: "/usr/share/graylog/data/config/graylog.conf"
+        {{- end }}
+        {{- range $configFile := (keys .Values.contentpack) }}
+        - name: contentpack
+          mountPath: "/usr/share/graylog/data/contentpacks/{{ $configFile }}"
+          subPath: "{{ $configFile }}"
+        {{- end }}
+        - name: journal
+          mountPath: "/usr/share/graylog/data/journal"
+          # https://community.graylog.org/t/graylog-kubernetes-file-lock-on-volume-mount/4571
+          subPath: "journal"
+    {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      volumes:
+        {{- if .Values.config }}
+        - name: config
+          configMap:
+            name: {{ template "graylog.fullname" . }}-config
+        {{- end }}
+        - name: contentpack
+          configMap:
+            name: {{ template "graylog.fullname" . }}-contentpack
+        - name: journal
+      {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "graylog.fullname" .) }}
+      {{- else }}
+          emptyDir: {}
+      {{- end -}}

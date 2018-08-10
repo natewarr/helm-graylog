@@ -1,0 +1,14 @@
+name: graylog
+version: 1.0.0
+appVersion: 2.4.6
+description:
+icon: https://global-uploads.webflow.com/5ac133a161e365de41ae40d3/5ac133a161e3652106ae4107_logo-graylog.png
+keywords:
+- graylog
+maintainers:
+- name: skaarj
+  email: skaarj.sergey@gmail.com
+sources:
+- https://github.com/Graylog2/graylog2-server
+engine: gotpl
+home: https://www.graylog.org/
