@@ -204,124 +204,153 @@ contentpack:
           "type":"org.graylog.plugins.beats.BeatsInput",
           "global":true,
           "extractors":[]
-        }//,
-        // {
-        //   "title":"Raw/Plaintext UDP input",
-        //   "configuration":{
-        //     "override_source":null,
-        //     "recv_buffer_size":262144,
-        //     "bind_address":"0.0.0.0",
-        //     "port":5555
-        //   },
-        //   "static_fields":{},
-        //   "type":"org.graylog2.inputs.raw.udp.RawUDPInput",
-        //   "global":true,
-        //   "extractors":[]
-        // },
-        // {
-        //   "title":"Raw/Plaintext TCP input",
-        //   "configuration":{
-        //     "recv_buffer_size":1048576,
-        //     "tcp_keepalive":false,
-        //     "use_null_delimiter":false,
-        //     "tls_client_auth_cert_file":"",
-        //     "bind_address":"0.0.0.0",
-        //     "tls_cert_file":"",
-        //     "port":5555,
-        //     "tls_key_file":"admin",
-        //     "tls_enable":false,
-        //     "tls_key_password":"admin",
-        //     "max_message_size":2097152,
-        //     "tls_client_auth":"disabled",
-        //     "override_source":null
-        //   },
-        //   "static_fields":{},
-        //   "type":"org.graylog2.inputs.raw.tcp.RawTCPInput",
-        //   "global":false,
-        //   "extractors":[]
-        // },
-        // {
-        //   "title":"GELF UDP input",
-        //   "configuration":{
-        //     "override_source":null,
-        //     "recv_buffer_size":262144,
-        //     "bind_address":"0.0.0.0",
-        //     "port":12201,
-        //     "decompress_size_limit":8388608
-        //   },
-        //   "static_fields":{},
-        //   "type":"org.graylog2.inputs.gelf.udp.GELFUDPInput",
-        //   "global":true,
-        //   "extractors":[]
-        // },
-        // {
-        //   "title":"GELF TCP input",
-        //   "configuration":{
-        //     "recv_buffer_size":1048576,
-        //     "tcp_keepalive":false,
-        //     "use_null_delimiter":true,
-        //     "tls_client_auth_cert_file":"",
-        //     "bind_address":"0.0.0.0",
-        //     "tls_cert_file":"",
-        //     "decompress_size_limit":8388608,
-        //     "port":12201,
-        //     "tls_key_file":"admin",
-        //     "tls_enable":false,
-        //     "tls_key_password":"admin",
-        //     "max_message_size":2097152,
-        //     "tls_client_auth":"disabled",
-        //     "override_source":null
-        //   },
-        //   "static_fields":{},
-        //   "type":"org.graylog2.inputs.gelf.tcp.GELFTCPInput",
-        //   "global":true,
-        //   "extractors":[]
-        // },
-        // {
-        //   "title":"Syslog UDP input",
-        //   "configuration":{
-        //     "expand_structured_data":false,
-        //     "recv_buffer_size":262144,
-        //     "port":514,
-        //     "override_source":null,
-        //     "force_rdns":false,
-        //     "allow_override_date":true,
-        //     "bind_address":"0.0.0.0",
-        //     "store_full_message":false
-        //   },
-        //   "static_fields":{},
-        //   "type":"org.graylog2.inputs.syslog.udp.SyslogUDPInput",
-        //   "global":true,
-        //   "extractors":[]
-        // },
-        // {
-        //   "title":"Syslog TCP input",
-        //   "configuration":{
-        //     "recv_buffer_size":1048576,
-        //     "tcp_keepalive":false,
-        //     "use_null_delimiter":false,
-        //     "tls_client_auth_cert_file":"",
-        //     "force_rdns":false,
-        //     "bind_address":"0.0.0.0",
-        //     "tls_cert_file":"",
-        //     "store_full_message":false,
-        //     "expand_structured_data":false,
-        //     "port":514,
-        //     "tls_key_file":"admin",
-        //     "tls_enable":false,
-        //     "tls_key_password":"admin",
-        //     "max_message_size":2097152,
-        //     "tls_client_auth":"disabled",
-        //     "override_source":null,
-        //     "allow_override_date":true
-        //   },
-        //   "static_fields":{},
-        //   "type":"org.graylog2.inputs.syslog.tcp.SyslogTCPInput",
-        //   "global":true,
-        //   "extractors":[]
-        // }
+        }
       ]
     }
+
+  # inputs.json: |
+  #   {
+  #     "name":"Inputs",
+  #     "description":"Contentpack that adds global inputs",
+  #     "category":"Inputs",
+  #     "inputs":[
+  #       {
+  #         "title":"Beats input",
+  #         "configuration":{
+  #           "recv_buffer_size":262144,
+  #           "port":5044,
+  #           "tls_key_file":"admin",
+  #           "tls_enable":false,
+  #           "tls_key_password":"admin",
+  #           "tcp_keepalive":false,
+  #           "tls_client_auth_cert_file":"",
+  #           "tls_client_auth":"disabled",
+  #           "override_source":null,
+  #           "bind_address":"0.0.0.0",
+  #           "tls_cert_file":""
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog.plugins.beats.BeatsInput",
+  #         "global":true,
+  #         "extractors":[]
+  #       },
+  #       {
+  #         "title":"Raw/Plaintext UDP input",
+  #         "configuration":{
+  #           "override_source":null,
+  #           "recv_buffer_size":262144,
+  #           "bind_address":"0.0.0.0",
+  #           "port":5555
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog2.inputs.raw.udp.RawUDPInput",
+  #         "global":true,
+  #         "extractors":[]
+  #       },
+  #       {
+  #         "title":"Raw/Plaintext TCP input",
+  #         "configuration":{
+  #           "recv_buffer_size":1048576,
+  #           "tcp_keepalive":false,
+  #           "use_null_delimiter":false,
+  #           "tls_client_auth_cert_file":"",
+  #           "bind_address":"0.0.0.0",
+  #           "tls_cert_file":"",
+  #           "port":5555,
+  #           "tls_key_file":"admin",
+  #           "tls_enable":false,
+  #           "tls_key_password":"admin",
+  #           "max_message_size":2097152,
+  #           "tls_client_auth":"disabled",
+  #           "override_source":null
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog2.inputs.raw.tcp.RawTCPInput",
+  #         "global":false,
+  #         "extractors":[]
+  #       },
+  #       {
+  #         "title":"GELF UDP input",
+  #         "configuration":{
+  #           "override_source":null,
+  #           "recv_buffer_size":262144,
+  #           "bind_address":"0.0.0.0",
+  #           "port":12201,
+  #           "decompress_size_limit":8388608
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog2.inputs.gelf.udp.GELFUDPInput",
+  #         "global":true,
+  #         "extractors":[]
+  #       },
+  #       {
+  #         "title":"GELF TCP input",
+  #         "configuration":{
+  #           "recv_buffer_size":1048576,
+  #           "tcp_keepalive":false,
+  #           "use_null_delimiter":true,
+  #           "tls_client_auth_cert_file":"",
+  #           "bind_address":"0.0.0.0",
+  #           "tls_cert_file":"",
+  #           "decompress_size_limit":8388608,
+  #           "port":12201,
+  #           "tls_key_file":"admin",
+  #           "tls_enable":false,
+  #           "tls_key_password":"admin",
+  #           "max_message_size":2097152,
+  #           "tls_client_auth":"disabled",
+  #           "override_source":null
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog2.inputs.gelf.tcp.GELFTCPInput",
+  #         "global":true,
+  #         "extractors":[]
+  #       },
+  #       {
+  #         "title":"Syslog UDP input",
+  #         "configuration":{
+  #           "expand_structured_data":false,
+  #           "recv_buffer_size":262144,
+  #           "port":514,
+  #           "override_source":null,
+  #           "force_rdns":false,
+  #           "allow_override_date":true,
+  #           "bind_address":"0.0.0.0",
+  #           "store_full_message":false
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog2.inputs.syslog.udp.SyslogUDPInput",
+  #         "global":true,
+  #         "extractors":[]
+  #       },
+  #       {
+  #         "title":"Syslog TCP input",
+  #         "configuration":{
+  #           "recv_buffer_size":1048576,
+  #           "tcp_keepalive":false,
+  #           "use_null_delimiter":false,
+  #           "tls_client_auth_cert_file":"",
+  #           "force_rdns":false,
+  #           "bind_address":"0.0.0.0",
+  #           "tls_cert_file":"",
+  #           "store_full_message":false,
+  #           "expand_structured_data":false,
+  #           "port":514,
+  #           "tls_key_file":"admin",
+  #           "tls_enable":false,
+  #           "tls_key_password":"admin",
+  #           "max_message_size":2097152,
+  #           "tls_client_auth":"disabled",
+  #           "override_source":null,
+  #           "allow_override_date":true
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog2.inputs.syslog.tcp.SyslogTCPInput",
+  #         "global":true,
+  #         "extractors":[]
+  #       }
+  #     ]
+  #   }
 
 mongodb:
   image:
