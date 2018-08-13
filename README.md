@@ -14,7 +14,7 @@
 
   * Install Graylog
 
-        helm install ./helm-graylog --name graylog
+        helm install ./helm-graylog --name graylog --set secret=[16 symbol string]
 
 ## Uninstall
 

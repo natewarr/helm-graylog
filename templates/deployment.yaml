@@ -31,15 +31,11 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: GRAYLOG_PASSWORD_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "graylog.fullname" . }}
-              key: password-secret
+          value: {{ required "Secret .Values.secret required!" .Values.secret }}
         - name: GRAYLOG_ROOT_PASSWORD_SHA2
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "graylog.fullname" . }}
-              key: root-password-sha2
+          value: {{ .Values.secret | sha256sum }}
+        - name: GRAYLOG_IS_MASTER
+          value: "true"
         - name: GRAYLOG_CONTENT_PACKS_AUTO_LOAD
           value: "{{- range $index, $file := (keys .Values.contentpack) }}grok-patterns.json,{{ if $index }},{{ end }}{{ $file }}{{- end }}"
         {{- range $key, $value := .Values.env }}
