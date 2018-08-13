@@ -22,6 +22,10 @@ service:
       port: 9000
       targetPort: http
       protocol: TCP
+    beats:
+      port: 5044
+      targetPort: beats
+      protocol: TCP
     # raw-udp:
     #   port: 5555
     #   targetPort: 5555
@@ -65,6 +69,9 @@ service:
 ports:
   - name: http
     containerPort: 9000
+    protocol: TCP
+  - name: beats
+    containerPort: 5044
     protocol: TCP
   # - name: raw-udp
   #   containerPort: 5555
