@@ -1,3 +1,4 @@
+{{- if gt .Values.slave.replicaCount 0.0 -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -6,9 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "graylog.fullname" . }}
+    component: graylog-slave
+  name: {{ template "graylog.fullname" . }}-slave
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.slave.replicaCount }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -35,7 +37,7 @@ spec:
         - name: GRAYLOG_ROOT_PASSWORD_SHA2
           value: {{ .Values.secret | sha256sum }}
         - name: GRAYLOG_IS_MASTER
-          value: "true"
+          value: "false"
         - name: GRAYLOG_CONTENT_PACKS_AUTO_LOAD
           value: "{{- range $index, $file := (keys .Values.contentpack) }}grok-patterns.json,{{ if $index }},{{ end }}{{ $file }}{{- end }}"
         {{- range $key, $value := .Values.env }}
@@ -105,3 +107,4 @@ spec:
       resources:
         requests:
           storage: 10Gi
+{{- end -}}

@@ -3,7 +3,10 @@ image:
   tag: "2.4.6-1"
   pullPolicy: "IfNotPresent"
 
-secret:
+replicaCount: 1
+
+slave:
+  replicaCount: 2
 
 env:
   # Every configuration option can be set via environment variables.
@@ -129,7 +132,9 @@ tolerations: []
 nodeSelector: {}
 
 podAnnotations: {}
-replicaCount: 1
+
+# For password_secret and root_password_sha2
+secret:
 
 # config:
 #   # Default Graylog configuration
@@ -341,6 +346,15 @@ contentpack:
   #   }
 
 
+elasticsearch:
+  image:
+    repository: "docker.elastic.co/elasticsearch/elasticsearch"
+    tag: 5.6.10
+
+  cluster:
+    xpackEnable: true
+
+
 mongodb:
   image:
     repository: bitnami/mongodb
@@ -353,16 +367,9 @@ mongodb:
   usePassword: false
 
 
-elasticsearch:
-  image:
-    repository: "docker.elastic.co/elasticsearch/elasticsearch"
-    tag: 5.6.10
-
-  cluster:
-    xpackEnable: true
-
-
 filebeat:
+  enabled: true
+
   image:
     tag: 6.3.2
 
