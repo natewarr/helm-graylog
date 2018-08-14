@@ -6,7 +6,7 @@ image:
 replicaCount: 1
 
 slave:
-  replicaCount: 2
+  replicaCount: 0
 
 env:
   # Every configuration option can be set via environment variables.
@@ -14,8 +14,8 @@ env:
   # Ref: http://docs.graylog.org/en/2.4/pages/installation/docker.html#configuration
   #
   GRAYLOG_WEB_ENDPOINT_URI: http://127.0.0.1:9000/api
-  GRAYLOG_ELASTICSEARCH_HOSTS: http://graylog-elasticsearch-discovery:9200
-  GRAYLOG_MONGODB_URI: mongodb://graylog-mongodb:27017/graylog
+  GRAYLOG_ELASTICSEARCH_HOSTS: http://elasticsearch-discovery:9200
+  GRAYLOG_MONGODB_URI: mongodb://mongodb:27017/graylog
 
 service:
   type: ClusterIP
@@ -347,6 +347,8 @@ contentpack:
 
 
 elasticsearch:
+  fullnameOverride: elasticsearch
+
   image:
     repository: "docker.elastic.co/elasticsearch/elasticsearch"
     tag: 5.6.10
@@ -356,6 +358,8 @@ elasticsearch:
 
 
 mongodb:
+  fullnameOverride: mongodb
+
   image:
     repository: bitnami/mongodb
     tag: 3.6.6-debian-9
