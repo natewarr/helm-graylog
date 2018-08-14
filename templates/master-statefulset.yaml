@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: {{ template "graylog.name" . }}
@@ -95,10 +95,13 @@ spec:
         - name: contentpack
           configMap:
             name: {{ template "graylog.fullname" . }}-contentpack
-        - name: journal
-      {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "graylog.fullname" .) }}
-      {{- else }}
-          emptyDir: {}
-      {{- end -}}
+  volumeClaimTemplates:
+  - metadata:
+      name: journal
+#      annotations:
+#        volume.beta.kubernetes.io/storage-class: "fast"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
