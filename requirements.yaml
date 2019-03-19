@@ -2,7 +2,10 @@ dependencies:
   - name: mongodb
     version: 4.0.4
     repository: https://kubernetes-charts.storage.googleapis.com/
-  - name: filebeat
-    version: 0.7.0
-    repository: https://kubernetes-charts.storage.googleapis.com/
-    condition: filebeat.enabled
+  # - name: filebeat
+  #   version: 0.7.0
+  #   repository: https://kubernetes-charts.storage.googleapis.com/
+  #   condition: filebeat.enabled,global.filebeat.enabled
+  - name: elasticsearch
+    version: 6.5.3-alpha1
+    repository: https://helm.elastic.co

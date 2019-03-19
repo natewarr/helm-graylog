@@ -33,9 +33,9 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: GRAYLOG_PASSWORD_SECRET
-          value: {{ required "Secret .Values.secret required!" .Values.secret }}
+          value: {{ required "Secret .Values.password_secret required!" .Values.password_secret }}
         - name: GRAYLOG_ROOT_PASSWORD_SHA2
-          value: {{ .Values.secret | sha256sum }}
+          value: {{ required "Secret .Values.root_password_sha2 required!" .Values.root_password_sha2 }}
         - name: GRAYLOG_IS_MASTER
           value: "false"
         - name: GRAYLOG_CONTENT_PACKS_AUTO_LOAD
@@ -59,7 +59,7 @@ spec:
         #     initialDelaySeconds: 20
         #     failureThreshold: 5
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 12 }}
         volumeMounts:
         {{- if .Values.config }}
         - name: config

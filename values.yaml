@@ -28,30 +28,30 @@ service:
       port: 5044
       targetPort: beats
       protocol: TCP
-    # raw-udp:
-    #   port: 5555
-    #   targetPort: 5555
-    #   protocol: UDP
-    # raw-tcp:
-    #   port: 5555
-    #   targetPort: 5555
-    #   protocol: TCP
-    # gelf-udp:
-    #   port: 12201
-    #   targetPort: gelf-udp
-    #   protocol: UDP
-    # gelf-tcp:
-    #   port: 12201
-    #   targetPort: gelf-tcp
-    #   protocol: TCP
-    # syslog-udp:
-    #   port: 514
-    #   targetPort: syslog-udp
-    #   protocol: UDP
-    # syslog-tcp:
-    #   port: 514
-    #   targetPort: syslog-tcp
-    #   protocol: TCP
+    raw-udp:
+      port: 5555
+      targetPort: 5555
+      protocol: UDP
+    raw-tcp:
+      port: 5555
+      targetPort: 5555
+      protocol: TCP
+    gelf-udp:
+      port: 12201
+      targetPort: gelf-udp
+      protocol: UDP
+    gelf-tcp:
+      port: 12201
+      targetPort: gelf-tcp
+      protocol: TCP
+    syslog-udp:
+      port: 514
+      targetPort: syslog-udp
+      protocol: UDP
+    syslog-tcp:
+      port: 514
+      targetPort: syslog-tcp
+      protocol: TCP
 
   # External IP addresses of service
   # externalIPs:
@@ -75,24 +75,24 @@ ports:
   - name: beats
     containerPort: 5044
     protocol: TCP
-  # - name: raw-udp
-  #   containerPort: 5555
-  #   protocol: UDP
-  # - name: raw-tcp
-  #   containerPort: 5555
-  #   protocol: TCP
-  # - name: gelf-udp
-  #   containerPort: 12201
-  #   protocol: UDP
-  # - name: gelf-tcp
-  #   containerPort: 12201
-  #   protocol: TCP
-  # - name: syslog-udp
-  #   containerPort: 514
-  #   protocol: UDP
-  # - name: syslog-tcp
-  #   containerPort: 514
-  #   protocol: TCP
+  - name: raw-udp
+    containerPort: 5555
+    protocol: UDP
+  - name: raw-tcp
+    containerPort: 5555
+    protocol: TCP
+  - name: gelf-udp
+    containerPort: 12201
+    protocol: UDP
+  - name: gelf-tcp
+    containerPort: 12201
+    protocol: TCP
+  - name: syslog-udp
+    containerPort: 514
+    protocol: UDP
+  - name: syslog-tcp
+    containerPort: 514
+    protocol: TCP
 
 ingress:
   enabled: false
@@ -133,8 +133,11 @@ nodeSelector: {}
 
 podAnnotations: {}
 
-# For password_secret and root_password_sha2
-secret:
+#graylog uses this to salt internal passwords
+#hint - change this at deploy time
+password_secret: abcdef1234567890
+#graylog makes this the root password hash; change this too
+root_password_sha2: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8 #password
 
 # config:
 #   # Default Graylog configuration
@@ -171,35 +174,37 @@ secret:
 #   content_packs_auto_load = grok-patterns.json
 #   proxied_requests_thread_pool_size = 32
 
-contentpack:
-  inputs.json: |
-    {
-      "name":"Inputs",
-      "description":"Contentpack that adds global inputs",
-      "category":"Inputs",
-      "inputs":[
-        {
-          "title":"Beats input",
-          "configuration":{
-            "recv_buffer_size":262144,
-            "port":5044,
-            "tls_key_file":"admin",
-            "tls_enable":false,
-            "tls_key_password":"admin",
-            "tcp_keepalive":false,
-            "tls_client_auth_cert_file":"",
-            "tls_client_auth":"disabled",
-            "override_source":null,
-            "bind_address":"0.0.0.0",
-            "tls_cert_file":""
-          },
-          "static_fields":{},
-          "type":"org.graylog.plugins.beats.BeatsInput",
-          "global":true,
-          "extractors":[]
-        }
-      ]
-    }
+contentpack: {}
+  # inputs.json: |
+  #   {
+  #     "name":"Inputs",
+  #     "description":"Contentpack that adds global inputs",
+  #     "category":"Inputs",
+  #       {
+  #         "title":"GELF TCP input",
+  #         "configuration":{
+  #           "recv_buffer_size":1048576,
+  #           "tcp_keepalive":false,
+  #           "use_null_delimiter":true,
+  #           "tls_client_auth_cert_file":"",
+  #           "bind_address":"0.0.0.0",
+  #           "tls_cert_file":"",
+  #           "decompress_size_limit":8388608,
+  #           "port":12201,
+  #           "tls_key_file":"admin",
+  #           "tls_enable":false,
+  #           "tls_key_password":"admin",
+  #           "max_message_size":2097152,
+  #           "tls_client_auth":"disabled",
+  #           "override_source":null
+  #         },
+  #         "static_fields":{},
+  #         "type":"org.graylog2.inputs.gelf.tcp.GELFTCPInput",
+  #         "global":true,
+  #         "extractors":[]
+  #       }
+  #     ]
+  #   }
 
   # inputs.json: |
   #   {
@@ -369,37 +374,3 @@ mongodb:
     size: 8Gi
 
   usePassword: false
-
-
-filebeat:
-  enabled: true
-
-  image:
-    tag: 6.3.2
-
-  config:
-
-    filebeat.prospectors:
-      - type: log
-        enabled: true
-        paths:
-          - /var/log/*.log
-          - /var/log/messages
-          - /var/log/syslog
-
-      - type: docker
-        containers.ids:
-          - "*"
-        processors:
-          - add_kubernetes_metadata:
-              in_cluster: true
-          - drop_event:
-              when:
-                equals:
-                  kubernetes.container.name: "filebeat"
-
-    output.file:
-      enabled: false
-    output.logstash:
-      hosts:
-        - graylog:5044

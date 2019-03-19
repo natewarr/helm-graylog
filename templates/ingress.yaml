@@ -23,7 +23,9 @@ spec:
           - path: /
             backend:
               serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
+              # servicePort: {{ $servicePort }}
+              #temp hack
+              servicePort: 9000
     {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
